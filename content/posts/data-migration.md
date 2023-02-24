@@ -1,7 +1,7 @@
 ---
 title: "Data Migration Strategy"
 date: 2023-02-24T16:47:15Z
-draft: true
+draft: false
 ---
 
 Some practical and technical thoughts on how to execute a data migration project.\

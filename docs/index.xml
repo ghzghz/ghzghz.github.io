@@ -6,7 +6,19 @@
     <description>Recent content on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-uk</language>
-    <lastBuildDate>Fri, 24 Feb 2023 16:16:51 +0000</lastBuildDate><atom:link href="https://ghzghz.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 24 Feb 2023 16:47:15 +0000</lastBuildDate><atom:link href="https://ghzghz.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Data Migration Strategy</title>
+      <link>https://ghzghz.github.io/posts/data-migration/</link>
+      <pubDate>Fri, 24 Feb 2023 16:47:15 +0000</pubDate>
+      
+      <guid>https://ghzghz.github.io/posts/data-migration/</guid>
+      <description>Some practical and technical thoughts on how to execute a data migration project.
+Specifically consumer data from a legacy system as part of a big bang or phased migration, where the discovery, data quality, migration rules, business rules and configuration of the target system is ongoing throughout the project.
+Some of these approaches may be relevant for other data migrations.
+Adopting best practice from software development Link to heading Continuous delivery Concept of a build Automate repeated tasks Fast feedback loop Automated testing Source control If it&amp;rsquo;s not in source control then it doesn&amp;rsquo;t exist Seperation of concerns Involving the business Link to heading Value mapping sheets Shared code for migration logic Fast feedback loop Logging Sandbox Link to heading class hello_sayer: def __init__(self, greeting = &amp;#34;Hello&amp;#34;): self.</description>
+    </item>
+    
     <item>
       <title>My First Post</title>
       <link>https://ghzghz.github.io/posts/my-first-post/</link>
