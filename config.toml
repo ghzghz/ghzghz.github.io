@@ -2,3 +2,5 @@ baseURL = 'https://ghzghz.github.io/'
 languageCode = 'en-uk'
 title = 'My New Hugo Site'
 theme = 'ananke'
+publishDir = "docs"
+
