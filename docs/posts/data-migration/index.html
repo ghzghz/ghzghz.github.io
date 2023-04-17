@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>
+        Data Migration ::
+        Geraint Williams
+      </title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="Overview # I&amp;rsquo;ve worked on many system migration projects over the years in the arena of traditional consumer subscription and billing: cable and satellite and streaming TV, broadband, IP telephony. I wanted to write down some observations on one key aspect of these projects, that of data migration. I intend to describe in detail a technical approach that has worked well for me, as it differs from the more common approaches I have seen and used; although all approaches have pros and cons and no one project is like another."
+/>
+<meta
+  name="keywords"
+  content=""
+/>
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="/posts/data-migration/" />
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/style.css" />
+
+<link rel="stylesheet" href="/style.css" />
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/img/apple-touch-icon-144-precomposed.png" />
+<link rel="shortcut icon" href="/img/favicon.png" />
+
+
+<link href="/fonts/Inter-Italic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/Inter-Regular.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/Inter-Medium.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/Inter-MediumItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/Inter-Bold.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/fonts/Inter-BoldItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Data Migration"/>
+<meta name="twitter:description" content="Overview # I&rsquo;ve worked on many system migration projects over the years in the arena of traditional consumer subscription and billing: cable and satellite and streaming TV, broadband, IP telephony. I wanted to write down some observations on one key aspect of these projects, that of data migration. I intend to describe in detail a technical approach that has worked well for me, as it differs from the more common approaches I have seen and used; although all approaches have pros and cons and no one project is like another."/>
+
+
+
+<meta property="og:title" content="Data Migration" />
+<meta property="og:description" content="Overview # I&rsquo;ve worked on many system migration projects over the years in the arena of traditional consumer subscription and billing: cable and satellite and streaming TV, broadband, IP telephony. I wanted to write down some observations on one key aspect of these projects, that of data migration. I intend to describe in detail a technical approach that has worked well for me, as it differs from the more common approaches I have seen and used; although all approaches have pros and cons and no one project is like another." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/posts/data-migration/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-04-17T16:15:19+01:00" />
+<meta property="article:modified_time" content="2023-04-17T16:15:19+01:00" /><meta property="og:site_name" content="Geraint Williams" />
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a
+  href="/"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >hello friend</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+      <span class="theme-toggle">
+        <svg
+  class="theme-toggler"
+  width="24"
+  height="24"
+  viewBox="0 0 48 48"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"
+  />
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <article class="post">
+    <h1 class="post-title">Data Migration</h1>
+    <div class="post-meta">
+      
+        <time class="post-date">
+          2023-04-17
+        </time>
+
+        
+          
+        
+      
+
+      
+
+
+      
+    </div>
+
+    
+
+    
+
+    <div class="post-content">
+      
+        
+        <h2>Table of Contents</h2>
+        <aside class="table-of-contents"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#scope">Scope</a></li>
+    <li><a href="#legacy-system">Legacy System</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#general">General</a></li>
+    <li><a href="#technical-approach">Technical Approach</a></li>
+  </ul>
+</nav></aside>
+        
+      
+      <ul>
+<li></li>
+</ul>
+<h1 id="overview">
+  Overview
+  <a href="#overview" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<p>I&rsquo;ve worked on many system migration projects over the years in the arena of traditional consumer subscription and billing: cable and satellite and streaming TV, broadband, IP telephony.
+I wanted to write down some observations on one key aspect of these projects, that of data migration.  I intend to describe in detail a technical approach that has worked well for me, as it differs from the more common approaches I have seen and used; although all approaches have pros and cons and no one project is like another.</p>
+<h2 id="scope">
+  Scope
+  <a href="#scope" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>If I&rsquo;m referencing anything specific in what follows, I have in my mind a business support system for a consumer subscription service for e.g. pay TV.  That is a system or systems handling contracts, products, prices, discounts, service usage, invoicing, accounts receivable, collections, financial reporting, contact centre and technical support, sales pipelines, hardware logistics and asset management.  However, any situation where the business meaning of the data is the key focus should be partially relevant to what follows.</p>
+<p>Contrast this to a task of migrating large quantities of logs, event data, transactional data where the focus is more likely to be on technical performance and dealing with synchronization and consistency.  Here my points are likely to have little value.</p>
+<h2 id="legacy-system">
+  Legacy System
+  <a href="#legacy-system" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>It was common to find the main system supporting such a business to be rather old in software terms, custom built or highly configured, possibly developed organically in-house.  A typical example being a system built using a 4GL tool with the database growing out of the incremental development to support new business, rather than being built on top of a well designed data model.  The data model may also pre-date the era of de facto relational database use.  In these cases, there is also unlikely to be good documentation of the data model available and maybe only one subject matter expert (SME).</p>
+<p>It is less likely to find cases like this these days, but what I discuss is still applicable to some degree for migrations from systems that were developed in the last decades, you can still often see an archaeological trail in these systems (and in the greater portfolio of systems surrounding them) as they have been developed and heavily customised over the years.  The business case to migrate from these systems may well come from business accusation and mergers, rather than a need to migrate away from legacy technology and the business risk of in-house development.</p>
+<h1 id="high-level-good-practice">
+  High Level Good Practice
+  <a href="#high-level-good-practice" class="h-anchor" aria-hidden="true">#</a>
+</h1>
+<p>Here I list some high level bullet points of what I believe to be good practice.  Most of these will be fairly standard.  However the last few of these points cover a technical approach that differs from the more common batch ETL approach used for data migrations.  I&rsquo;ll go into more detail in all the points below in future posts, especially on the technical approach where I&rsquo;ll cover pros and cons.</p>
+<h2 id="general">
+  General
+  <a href="#general" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<ul>
+<li>Set expectations on scope of migration from the start</li>
+<li>Negotiate from position of taking minimal set of data representing the current state of the root business entity</li>
+<li>Separate core requirements from &rsquo;nice to have'</li>
+<li>Use other systems, datastores and temporary business processes to create workarounds for non-core business requirements e.g. reporting, access to historical data, pending transactions</li>
+<li>Involve the business in a hands-on way</li>
+<li>Publish and consume mapping sheets.  Make business own these and other assets</li>
+<li>Enumerate and publish migration rules</li>
+<li>Create an automated build process</li>
+<li>Apply good software development and delivery practices</li>
+<li>Release early, release often</li>
+<li>Throw out deviations on an error list, don&rsquo;t migrate bad data</li>
+<li>Automate data cleaning lists and bad data reports and create a simple process for enhancing them</li>
+<li>Identify large business processes to use for parallel validation of migrated data, e.g. billing run</li>
+<li>Expect migration development to be part of continuous discovery process</li>
+<li>Expect continuous refinement of migration logic</li>
+<li>Optimise for a tight feedback loop to enable the above</li>
+</ul>
+<h2 id="technical-approach">
+  Technical Approach
+  <a href="#technical-approach" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<ul>
+<li>Create a business model on top of the source system</li>
+<li>Create a business model on top of the destination system</li>
+<li>Separate concerns</li>
+<li>Develop a migration process that will migrate one root business entity at a time</li>
+<li>Scale this process into batches
+*&ndash;</li>
+</ul>
+
+    </div>
+    
+
+    
+      
+    
+  </article>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <a
+  href="/"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >hello friend</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+      <div class="copyright">
+        <span>© 2023 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span><a href="https://github.com/panr/hugo-theme-hello-friend" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+      
+    </div>
+
+    
+  </body>
+</html>

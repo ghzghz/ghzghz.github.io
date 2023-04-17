@@ -3,6 +3,7 @@ languageCode = 'en-uk'
 title = 'Geraint Williams'
 theme = 'hello-friend'
 paginate = 5
+publishDir = 'docs'
 
 [params]
 
