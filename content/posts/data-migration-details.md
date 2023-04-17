@@ -14,10 +14,10 @@ series = []
 
 # Overview
 
-Some practical and technical thoughts on planning and executing a data migration project.\
-Focused on consumer data from a legacy system as part of a big bang or phased migration,
+Here are some practical and technical thoughts on planning and executing a data migration project.\
+They are focused on consumer data from a legacy system as part of a big bang or phased migration;
 where the discovery, data quality, migration rules, business rules and configuration of the target system is ongoing throughout the project.\
-Sutiable for an agile, iterative and practical approach.\
+ie. sutiable for an agile, iterative and practical approach.\
 \
 These ideas will hopefully have some relevance for other data migration projects.\
 
