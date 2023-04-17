@@ -2,13 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://ghzghz.github.io/posts/data-migration/</loc>
-    <lastmod>2023-02-24T16:47:15+00:00</lastmod>
+    <loc>https://ghzghz.github.io/posts/data-migration-details/</loc>
+    <lastmod>2023-04-14T10:43:41+02:00</lastmod>
   </url><url>
     <loc>https://ghzghz.github.io/</loc>
-    <lastmod>2023-02-24T16:47:15+00:00</lastmod>
+    <lastmod>2023-04-14T10:43:41+02:00</lastmod>
   </url><url>
     <loc>https://ghzghz.github.io/posts/</loc>
+    <lastmod>2023-04-14T10:43:41+02:00</lastmod>
+  </url><url>
+    <loc>https://ghzghz.github.io/posts/data-migration/</loc>
     <lastmod>2023-02-24T16:47:15+00:00</lastmod>
   </url><url>
     <loc>https://ghzghz.github.io/posts/my-first-post/</loc>
