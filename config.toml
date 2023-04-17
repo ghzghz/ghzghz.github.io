@@ -1,0 +1,15 @@
+baseURL = '/'
+languageCode = 'en-uk'
+title = 'Geraint Williams'
+theme = 'hello-friend'
+paginate = 5
+
+[params]
+
+  defaultTheme = 'dark'
+  toc = true
+
+[languages]
+  [languages.en]
+    title = 'Geraint Williams'
+
