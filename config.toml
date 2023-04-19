@@ -13,4 +13,6 @@ publishDir = 'docs'
 [languages]
   [languages.en]
     title = 'Geraint Williams'
+    [languages.en.params.logo]
+    logoText = '.'
 
