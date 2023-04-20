@@ -64,24 +64,34 @@ Most of these points will be fairly standard.  However the last few of these poi
 #### Separate core requirements from 'nice to have'
 #### Use other systems, datastores and temporary business processes to create workarounds
 
-If you ask various parts of the business what they need to be migrated into the destination system they will likely say 'everything'.  This is clearly not in anyone's interest.  The more data (broad and deep) that you take across the more bad data you will move, the more data anomalies you will have, the more modelling you will need to do, the more instances of having to 'fake' something that just couldn't exist in the destination system due to concepts in the source and destination being wildly different.
+If you ask various parts of the business what they need to be migrated into the destination system they will likely say 'everything'.  This is clearly not in anyone's interest.  The more data (broad and deep) that you take across the more bad data you will move, the more data anomalies you will have, the more mapping and implementation in the destination system you will need to do, the more instances of having to 'fake' something that just couldn't exist in the destination system due to concepts in the source and destination being wildly different.
 
  e.g. systems may represent a set of active subscription products in very different ways, one may be bundled, the other components.  Mapping and migrating the current set of active products will be a hard enough task, how much value is there in trying to also map products the customer previous had and how the transitions between those products within the source system would have looked like if an equivalent had existed in the destination system at that time?
- i.e. to try and make the customer look as if they have always existed in the destination system.
+ i.e. to try and make the customer look as if they have always existed in the destination system?
 
  Very little value I would argue.  In which case the question to the business is to ask what purpose they are trying to achieve.  If this turns out to be historical reporting, or trend analysis or business intelligence, then the reporting systems that are currently used can continue to be used for this and allowances will have to be taken to 'merge' this data if required, or to accept some loss of fidelity for certain segments of customers for a certain time period.
 
  Another request may be for financial data.  It's important to keep financial data around for both customer service and regulatory reasons, but this does not imply that it needs to be available in a single core system.  In fact trying to move financial records created by a system that no longer exists and pretend that it was created by a system that didn't create it is not something that will be looked upon favourably in a financial audit.
 
  Another request is to handle pending transactions, requests for payments that have been made and not yet been processed, orders for new services that have been made and sent out to external systems, but have not yet been closed.
- In these cases it is necessary to be more accommodating, as this represents normal ongoing business.  Although for more niche business processes it would be better to try and close open transactions in the source system before migration. e.g. by pausing the business process that creates them, creating new orders directly in the destination system, paying out or writing off certain types of pending financial transactions.  In other cases and in the case of a big bang migration, it could be that the date is chosen for the migration to minimise the number of pending transactions, e.g. if the invoices are created in one batch in the middle of the month, and most money is received by the end of the month, it may make sense to migrate early in the month when majority of the customers have no open invoices (although you can argue here that if you are going to migrate one open invoice, then you may as well migrate a million)
+ In these cases it is necessary to be more accommodating, as this represents normal ongoing core business.  Although for more niche business processes it would be better to try and close open transactions in the source system before migration. e.g. by pausing the business process that creates them, creating new orders directly in the destination system, paying out or writing off certain types of pending financial transactions.  In other cases and in the case of a big bang migration, it could be that a date is chosen for the migration to minimise the number of pending transactions, e.g. if the invoices are created in one batch in the middle of the month, and most money is received by the end of the month, it may make sense to migrate early in the month when majority of the customers have no open invoices (although you can argue here that if you are going to migrate one open invoice, then you may as well migrate a million)
 
  All of these decisions take time and require by in and work from the business, so it is important to start early.  This is why I believe the correct approach is to be clear on a minimal set of data to take from the start, and be willing to negotiate to increase that set if and when the business has a good argument on why it cannot be handled in any other way.
 
+ A key thing to bear in mind here is that much of the data is useful only for a short period after the migration, it's usefulness quickly fades.  No matter what is done in the migration, all parts of the business will need to be aware that there has been a migration for the first 3, 6, 12 months after it has happened, and will anyway need to make allowances in their normal processes.
+
  Here is typically where I would start:
+
  * Former customers who are no longer customers, they have no active products and no pending finance, will not be migrated
    * Typically these customers will have been anonymised, or will be shortly anonymised
    * If there is a key sales process of trying to 'win back' some of these customers, then there may be push back
+ * Unpaid invoices or credits shall be rolled up into a balance or set of balances
+   * The detail of what financial actions created that invoice will not be represented in the destination system
+   * The source system and other financial systems still hold this data if it is required
+   * If the invoice detail is required for reference purposes only, then this data can be extracted separately to be presented, e.g. through a customer's internet account portal, as a separate and temporary reference only data set
+ * Historical transactions auditing how the customer got into their current state shall not be migrated
+   * Any reference, reporting or audit requirements to be handled via temporary access to the source system, or via reporting databases and tools
+   * Information that is temporary useful for good customer service, e.g. logs of recent interactions with call centre,  can be extracted to a temporary location to be presented as a temporary reference
 
 
 
