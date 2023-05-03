@@ -189,7 +189,7 @@ There are many advantages to this approach, but also some disadvantages.
 
 I used to worry about this more than I think I needed to.  Clearly querying a hierarchical set of data and inserting it is slower than a batch operation that can be optimised on the server, but how fast does it need to be?  The overall migration time including downtime on destination system, dealing with post migration clean-up when re-enabling constraints and building indexes, ease of testing and auditing, quality of migration etc. plays a role in this equation.
 
-I have found that some simple optimisations to create a batch of root entities to be migrated in one go, and then paralleling these batches has given acceptable overall migration times.  This is especially true with advances in hardware over the years with SSDs and improved network speeds.  In addition some pre migration steps to batch exclude non-migratable entities, possibly some custom indexes, an efficient batch insert process, and possibly a hybrid approach for migrating a few large but simple non-core tables; all have been enough to give confidence that this approach can work for systems with a few million root entities.
+I have found that some simple optimisations to create a batch of root entities to be migrated in one go, and then paralleling these batches has given acceptable overall migration times.  This is especially true with advances in hardware over the years with SSDs, server memory increases, and improved network speeds.  In addition some pre migration steps to batch exclude non-migratable entities, possibly some custom indexes, an efficient batch insert process, and possibly a hybrid approach for migrating a few large simple non-core tables; all have been enough to give confidence that this approach can work for systems with a few million root entities.
 
 #### Development effort
 
@@ -198,6 +198,59 @@ This differs compared to an ETL tool, where many of these things will be include
 
 Another issue is in house or contracted knowledge, ETL tools and even batch SQL are more likely to be familiar to more people than code developed in a specific programming language often by a single person.  There is also likely to be a push from the business to use tools that they have invested in for other parts of the business.
 
+#### Model the source database
+
+I use an ORM to model the source database from a relational model to an object model.  This sounds like an anti-patten, but bear with me.
+
+Firstly, typically not much of the source database needs modelling.  Given a database with maybe 1000 tables, there may only be 20 or so tables that hold data that is in scope for migration, plus a number of auxiliary tables containing reference data / historical data.  And within these core tables, only a subset of columns may hold interesting data.
+The same excessive of determining what these tables / columns are and what the relationship is with one another will need to be carried out regardless of migration method.
+
+The initial advantage to me in modelling the source database in this way is that discovery is automatically documented in an incremental way.  Relationships can be made explicit, confusing column names and confusing data modelling can be mapped into business terms, technical representations (e.g. soft deletes, inconsistent use of NULLs, representation of booleans or decimals, denormalisation anomalies) can be abstracted away.  Of course it is possible to develop and maintain a separate set of documentation while developing migration scripts / ETL jobs, but these will quickly become unmaintained if they are not actually being consumed directly by the migration code.
+
+Secondly, the ORM mapping is read only, so many short cuts can be taken over creating a two way mapping. e.g. my model is littered with read only properties as below.
+
+
+```python
+    @property
+    def primary_address(self):
+        return one(address for address in self.addresses
+                      if address.is_primary, 'missing or multiple primary addresses')
+```
+
+```python
+    @property
+    def date_of_last_invoice(self):
+        return max(i.create_date for i in self.invoices) if self.invoices else None
+```
+
+
+> When is abstraction like this too much abstraction?  When should unexpected data throw an exception, in the model or should it be modelled and handled in a higher level validation layer?  These are all gray areas, which you will develop some rules of thumb for as you develop the model.  e.g. I would normally not model data that the source system itself would not handle and throw an exception in the model, but if the source system handles the data, but the business rule you are working to does not, then I'd model it and catch it in a validation layer.
+
+
+Thirdly, having a object model can help develop some types of automated testing.   A complex object can be created in code and the output of the migration can be tested.  This is less brittle than having to clean / write seed data to a copy of the source database before running tests.  Another avenue it opens up is testing from seed data written to an in-memory sqllite database, which only needs to contain the few core tables you are testing.  This is 'only' a configuration change to the ORM.
+
+Join strategy is important, when dealing with batches of a number (maybe 1000) root entities, it's important to configure joined or select-in joins so that most of the reads you use for migration come from one large SQL, which can if necessary have custom indexes created for it.   There is a balance between premature optimisation, and proving that you are not going down a dead end with the approach that can never be scaled.
+
+
+#### Model the destination system
+
+Again, many of the pros and cons from the above apply.  We are trying to create an environment where complex migration rules can be expressed cleanly in business language, but at what cost?
+
+Discoverability and active documentation of the destination system comes for free, as does an abstraction from the physical implementation of the destination system.  But this is set against performance bottlenecks, human resource competency, development effort etc.
+
+One extra point I've seen with using this approach is that when there are multiple people working on a migration project then they can often be specialists in one of the systems, but not the other.   I've worked on a project where batch SQL was used for extracting and loading, but one person who knew the source system intimately worked on extracting the data into a business level format and converting it to a business level format within the domain of the destination system.  This format being defined by staging tables created by the second developer who knew the destination system intimately, but knew nothing of the source system or business mapping.  This person wrote the logic to persist the staging tables into the destination system with all the intricacies of the destination data model.
+
+
+Using an ORM for this model layer is more complex as short cuts that were available for a read-only model are not as easily available.  I've ended up writing a simple hierarchical to relational mapping layer for a few projects which takes a structure like:
+
+```python
+{
+  'name'
+}
+
+```
+
+Paybacks are large.
 
 
 
@@ -208,3 +261,9 @@ Another issue is in house or contracted knowledge, ETL tools and even batch SQL 
 
 
 
+* Create a business model on top of the source system
+* Create a business model on top of the destination system
+* Separate concerns
+* Develop a migration process that will migrate one root business entity at a time
+* Scale this process into batches
+* Output and publish a detailed structure log file
