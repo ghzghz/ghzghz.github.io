@@ -248,7 +248,7 @@ I use an ORM to model the source database from a relational model to an object m
 Firstly, typically not much of the source database needs modelling.
 
 Given a database with maybe 1000 tables, there may only be 20 or so tables that hold data that is in scope for migration, plus a number of auxiliary tables containing reference data / historical data.  And within these core tables, only a subset of columns may hold interesting data.
-The same excessive of determining what these tables / columns are and what the relationship is with one another will need to be carried out regardless of migration method.
+The same exercise of determining what these tables / columns are and what the relationship is with one another will need to be carried out regardless of migration method.
 
 The initial advantage to me in modelling the source database in this way is that discovery is automatically documented in an incremental way.
 
