@@ -7,7 +7,7 @@ publishDir = 'docs'
 
 [params]
 
-  defaultTheme = 'dark'
+  defaultTheme = 'light'
   toc = true
 
 [languages]
