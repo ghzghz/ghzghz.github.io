@@ -347,7 +347,7 @@ Implementation of migration rules more closely match the terms in which they are
 
 #### Output and publish a detailed structured log file
 
-Writing out detailed logs out of the migration is a very useful tool.  This only really possible to do in a fine grained and ordered way when using this migration approach. 
+I find that producing a detailed log out of the migration is a very useful.  This is only really possible to do in a fine grained and ordered way when using this entity hierarchy migration approach. 
 
 * Testers and the business can use this log file to read everything that happened to this customer in the migration  
 * Migration developers can use this to debug and fix issues
